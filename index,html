@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoSOL Wallet - Secure Solana Wallet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #9945FF, #14F195);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #9945FF, #14F195);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .balance-container {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .balance-label {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .balance-amount {
+            font-size: 42px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sol-icon {
+            color: #14F195;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 0;
+            border-radius: 15px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #9945FF, #14F195);
+            color: white;
+            box-shadow: 0 5px 15px rgba(153, 69, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(153, 69, 255, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .transaction-history {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .transactions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .transaction {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .transaction:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .transaction-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(153, 69, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #9945FF;
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .receive {
+            color: #14F195;
+        }
+
+        .send {
+            color: #FF6B6B;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a173b, #252349);
+            width: 90%;
+            max-width: 450px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #9945FF, #14F195);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #9945FF;
+            box-shadow: 0 0 0 3px rgba(153, 69, 255, 0.3);
+        }
+
+        .amount-container {
+            position: relative;
+        }
+
+        .max-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(153, 69, 255, 0.2);
+            color: #9945FF;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .max-btn:hover {
+            background: rgba(153, 69, 255, 0.3);
+        }
+
+        .modal-footer {
+            margin-top: 30px;
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .success-container {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(20, 241, 149, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 40px;
+            color: #14F195;
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #14F195;
+        }
+
+        .success-message {
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .explorer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #14F195;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .explorer-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .explorer-container {
+            padding: 30px;
+        }
+
+        .explorer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: white;
+        }
+
+        .explorer-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #9945FF, #14F195);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .explorer-body {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .explorer-row {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .explorer-row:last-child {
+            border-bottom: none;
+        }
+
+        .explorer-label {
+            width: 150px;
+            opacity: 0.8;
+        }
+
+        .explorer-value {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .encrypted {
+            color: #9945FF;
+            font-weight: 600;
+        }
+
+        .hash {
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        @media (max-width: 500px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .balance-amount {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="logo-text">Arcium Wallet</div>
+            </div>
+            
+            <div class="balance-container">
+                <div class="balance-label">TOTAL BALANCE</div>
+                <div class="balance-amount">
+                    <i class="fas fa-coins sol-icon"></i>
+                    4.69 SOL
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="sendBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    Send
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-qrcode"></i>
+                    Receive
+                </button>
+            </div>
+            
+            <div class="transaction-history">
+                <div class="section-title">
+                    <i class="fas fa-history"></i>
+                    Recent Transactions
+                </div>
+                
+                <div class="transactions">
+                    <div class="transaction">
+                        <div class="transaction-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">Received SOL</div>
+                            <div class="transaction-date">Today, 10:30 AM</div>
+                        </div>
+                        <div class="transaction-amount receive">+1.28 SOL</div>
+                    </div>
+                    
+                    <div class="transaction">
+                        <div class="transaction-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">NFT Purchase</div>
+                            <div class="transaction-date">Yesterday, 4:15 PM</div>
+                        </div>
+                        <div class="transaction-amount send">-0.75 SOL</div>
+                    </div>
+                    
+                    <div class="transaction">
+                        <div class="transaction-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-title">Sent to Friend</div>
+                            <div class="transaction-date">Jun 12, 2024</div>
+                        </div>
+                        <div class="transaction-amount send">-0.50 SOL</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Send Modal -->
+    <div class="modal" id="sendModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeSendModal">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <div class="modal-title">Send SOL</div>
+                <p>Enter receiver address and amount</p>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Receiver Wallet Address</label>
+                    <input type="text" class="form-input" id="receiverAddress" placeholder="Enter Solana wallet address">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Amount (SOL)</label>
+                    <div class="amount-container">
+                        <input type="number" class="form-input" id="amount" placeholder="0.00" min="0.000001" max="5" step="any">
+                        <button class="max-btn" id="maxBtn">MAX</button>
+                    </div>
+                    <div class="balance-hint" style="margin-top: 5px; font-size: 12px; opacity: 0.7;">
+                        Available: 5.00 SOL
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-block" id="confirmSend">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Now Using Arcium
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="success-container">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 class="success-title">Transaction Successful!</h2>
+                <p class="success-message">
+                    Your SOL has been sent successfully.<br>
+                    Transaction completed in 0.5 seconds.<br>
+                    And Was <encrypted>
+                </p>
+                <a href="#" class="explorer-btn" id="viewExplorer">
+                    <i class="fas fa-external-link-alt"></i>
+                    View on Explorer
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Explorer Modal -->
+    <div class="modal" id="explorerModal">
+        <div class="modal-content">
+            <div class="explorer-container">
+                <div class="explorer-header">
+                    <button class="back-btn" id="backFromExplorer">
+                        <i class="fas fa-arrow-left"></i>
+                        Back
+                    </button>
+                    <div class="explorer-title">Solana Explorer</div>
+                    <div></div> <!-- Spacer for alignment -->
+                </div>
+                
+                <div class="explorer-body">
+                    <div class="explorer-row">
+                        <div class="explorer-label">Transaction Hash:</div>
+                        <div class="explorer-value hash">3s7Kb...z9Q2d</div>
+                    </div>
+                    
+                    <div class="explorer-row">
+                        <div class="explorer-label">Status:</div>
+                        <div class="explorer-value">
+                            <span style="color: #14F195;">Confirmed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="explorer-row">
+                        <div class="explorer-label">Timestamp:</div>
+                        <div class="explorer-value">2025-07-26 14:30:22 UTC</div>
+                    </div>
+                    
+                    <div class="explorer-row">
+                        <div class="explorer-label">Sender:</div>
+                        <div class="explorer-value">Hx8B3...kL9P2</div>
+                    </div>
+                    
+                    <div class="explorer-row">
+                        <div class="explorer-label">Receiver:</div>
+                        <div class="explorer-value encrypted">ENCRYPTED</div>
+                    </div>
+                    
+                    <div class="explorer-row">
+                        <div class="explorer-label">Amount:</div>
+                        <div class="explorer-value encrypted">ENCRYPTED SOL</div>
+                    </div>
+                    
+                    <div class="explorer-row">
+                        <div class="explorer-label">Network Fee:</div>
+                        <div class="explorer-value">0.000005 SOL</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const sendBtn = document.getElementById('sendBtn');
+        const sendModal = document.getElementById('sendModal');
+        const closeSendModal = document.getElementById('closeSendModal');
+        const amountInput = document.getElementById('amount');
+        const maxBtn = document.getElementById('maxBtn');
+        const confirmSend = document.getElementById('confirmSend');
+        const successModal = document.getElementById('successModal');
+        const viewExplorer = document.getElementById('viewExplorer');
+        const explorerModal = document.getElementById('explorerModal');
+        const backFromExplorer = document.getElementById('backFromExplorer');
+        const receiverAddress = document.getElementById('receiverAddress');
+        
+        // Open Send Modal
+        sendBtn.addEventListener('click', () => {
+            sendModal.classList.add('active');
+            amountInput.value = '';
+            receiverAddress.value = '';
+        });
+        
+        // Close Send Modal
+        closeSendModal.addEventListener('click', () => {
+            sendModal.classList.remove('active');
+        });
+        
+        // Set max amount
+        maxBtn.addEventListener('click', () => {
+            amountInput.value = '5';
+        });
+        
+        // Validate amount
+        amountInput.addEventListener('input', () => {
+            if (parseFloat(amountInput.value) > 5) {
+                amountInput.value = '5';
+            }
+        });
+        
+        // Confirm Send
+        confirmSend.addEventListener('click', () => {
+            const amount = parseFloat(amountInput.value);
+            const address = receiverAddress.value.trim();
+            
+            if (!address) {
+                alert('Please enter receiver wallet address');
+                return;
+            }
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            if (amount > 5) {
+                alert('Amount cannot exceed your balance of 5 SOL');
+                return;
+            }
+            
+            // Close send modal and show success
+            sendModal.classList.remove('active');
+            setTimeout(() => {
+                successModal.classList.add('active');
+            }, 300);
+        });
+        
+        // View on Explorer
+        viewExplorer.addEventListener('click', (e) => {
+            e.preventDefault();
+            successModal.classList.remove('active');
+            setTimeout(() => {
+                explorerModal.classList.add('active');
+            }, 300);
+        });
+        
+        // Back from Explorer
+        backFromExplorer.addEventListener('click', () => {
+            explorerModal.classList.remove('active');
+            setTimeout(() => {
+                successModal.classList.add('active');
+            }, 300);
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === sendModal) {
+                sendModal.classList.remove('active');
+            }
+            if (e.target === successModal) {
+                successModal.classList.remove('active');
+            }
+            if (e.target === explorerModal) {
+                explorerModal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
